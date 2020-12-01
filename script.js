@@ -27,7 +27,7 @@ function displayWord() {
     `;
 
     const innerWord = wordEl.innerText.replace(/\n/g, '');
-    console.log(wordEl.innerText, innerWord)
+    // console.log(wordEl.innerText, innerWord)
 
     if(innerWord === selectedWord) {
         finalMessage.innerText = 'Congratiulation! You won!';
@@ -38,7 +38,29 @@ function displayWord() {
 
 //update wrong letters
 function updateWrongLettersEl() {
-    console.log('updatewronglettersel')    
+    // display wrong letters
+    wrongLettersEl.innerHTML = `
+        ${wrongLetters.length > 0 ? '<p>Wrong</p>' : ''}
+        ${wrongLetters.map(letter => `<span>${letter}</span>`)}
+    `;
+
+    // Display parts
+    figureParts.forEach((part, index) => {
+        const errors = wrongLetters.length;
+
+        if(index < errors) {
+            part.style.display = 'block';
+        } else {
+            part.style.display = 'none';
+        }
+    });
+
+    //check if lost
+    if(wrongLetters.length == figureParts.length) {
+        finalMessage.innerText = 'Unfortunately you lost';
+
+        popup.style.display = 'flex';
+    }
 }
 
 function showNotification() {
@@ -73,7 +95,21 @@ window.addEventListener('keydown', e => {
             }
         }
     }
-})
+});
 
+// restart game
+playAgainBtn.addEventListener('click', () => {
+    // Empty arrays
+    correctLetters.splice(0)
+    wrongLetters.splice(0)
+
+    selectedWord = words[Math.floor(Math.random() * words.length)];
+
+    displayWord();
+
+    updateWrongLettersEl();
+
+    popup.style.display = 'none';
+});
 
 displayWord()
